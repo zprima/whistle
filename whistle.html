@@ -1,0 +1,305 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whistle Field Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0E9; --surface:#F8F9F5; --surface-2:#E3E8DF; --ink:#1D2623; --muted:#56635C; --line:#C9D1C7;
+  --moss:#3D5C38; --on-moss:#F4F7F1; --gorse:#B97A0A; --gorse-soft:#F3E3BD; --good:#2F7A45; --warn:#A8690B; --bad:#A6392E;
+  --display:'Zilla Slab', 'Rockwell', Georgia, serif;
+  --body:'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131A17; --surface:#1B2420; --surface-2:#243029; --ink:#E3E9E2; --muted:#9BA8A0; --line:#33403A;
+    --moss:#89B07B; --on-moss:#10170F; --gorse:#E7AE45; --gorse-soft:#3A2E14; --good:#6CC287; --warn:#E7AE45; --bad:#E77F70;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131A17; --surface:#1B2420; --surface-2:#243029; --ink:#E3E9E2; --muted:#9BA8A0; --line:#33403A;
+  --moss:#89B07B; --on-moss:#10170F; --gorse:#E7AE45; --gorse-soft:#3A2E14; --good:#6CC287; --warn:#E7AE45; --bad:#E77F70;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);padding-inline:16px;margin:0}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.08}
+p{margin:0}
+a{color:var(--moss)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gorse);outline-offset:2px}
+
+header{padding-block:44px 28px;display:grid;gap:12px}
+.eyebrow{font:500 .75rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gorse)}
+header h1{font-size:clamp(2.3rem,5.5vw,3.6rem);font-weight:700}
+.lede{color:var(--muted);max-width:64ch;font-size:1.05rem}
+
+.cmd{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;margin-bottom:18px}
+.cmd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.cmd h2{font-size:1.7rem;font-weight:700}
+.says{font:500 1rem var(--mono);color:var(--gorse);margin-top:4px}
+.meaning{color:var(--muted);margin-top:2px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-size:.95rem}
+.btn:hover{border-color:var(--moss)}
+.btn.primary{background:var(--moss);color:var(--on-moss);border-color:var(--moss)}
+.btn svg{width:12px;height:12px;fill:currentColor}
+.graph-wrap{overflow-x:auto}
+.graph{width:100%;min-width:520px;height:auto;display:block;background:var(--surface-2);border-radius:10px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--surface-2);border-radius:8px;padding:6px 10px;font-size:.85rem;color:var(--muted)}
+.stat b{font:500 .9rem var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+code{font-family:var(--mono);font-size:.85em}
+.tracker h3{font:700 1.2rem/1.1 var(--display);margin:0}
+.readout{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.hz{font:500 2.4rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);min-width:7ch}
+.hz.off{color:var(--muted)}
+canvas.graph{min-width:0}
+.cmp-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:6px}
+select{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.key{display:inline-block;width:14px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.msg{color:var(--bad);font-size:.92rem}
+footer{padding-block:20px 44px;color:var(--muted);font-size:.88rem}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Sheepdog whistle</div>
+    <h1>Five whistle commands</h1>
+    <p class="lede">Away, Come Bye, Walk Up, Come Here and Lie Down, traced from <a href="https://www.youtube.com/watch?v=598gMv6AWG4" target="_blank" rel="noopener">Michael Moura's whistle commands video</a> (Moura Stock Dogs). Each graph shows the pitch (frequency) over time, measured from the video's audio. <b>Play</b> sounds a synthesised copy, <b>Slow</b> plays it at about half speed, and <b>Original</b> opens the video at that command.</p>
+  </header>
+  <main id="cmds"></main>
+
+  <section class="cmd tracker" id="tracker">
+    <div class="cmd-head">
+      <div><h2>Live pitch tracker</h2><p class="meaning">Whistle into your microphone and watch the frequency you're hitting. The sound is analysed in your browser; nothing is recorded or sent anywhere.</p></div>
+      <div class="btns"><button class="btn primary" type="button" id="micBtn">Start listening</button></div>
+    </div>
+    <p class="msg" id="micMsg" hidden></p>
+    <div class="readout"><span class="hz off" id="hz">— Hz</span><span class="meaning" id="hzNote">Press Start listening, then whistle.</span></div>
+    <div class="graph-wrap"><canvas class="graph" id="live" aria-label="Live frequency over the last 3 seconds"></canvas></div>
+    <div class="cmp-head">
+      <div><h3>Your last whistle</h3><p class="meaning">Captured automatically when you pause, and lined up against a command.</p></div>
+      <label>Compare with <select id="cmpSel"></select></label>
+    </div>
+    <div class="graph-wrap" id="cmpGraph"></div>
+    <div class="stats" id="cmpStats"></div>
+  </section>
+
+  <footer>The sounds are synthesised from the measured pitch, so they're cleaner than a real whistle. His whistle may be a different model from yours, so expect your own pitches to sit a little differently. The shape over time is what matters.</footer>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const YT=t=>`https://www.youtube.com/watch?v=598gMv6AWG4&t=${t}s`;
+
+const CMDS=[
+  {id:'away', name:'Away to Me', says:'whee-oo · wheee-ooo', yt:10, meaning:'Flank anticlockwise around the stock.',
+   notes:[{s:0,d:.34,p:[[0,1500],[.3,2650],[1,1500]]},{s:.37,d:.58,p:[[0,2400],[.16,3000],[.45,2870],[1,1150]]}]},
+  {id:'comebye', name:'Come Bye', says:'WHIT · whooo', yt:14, meaning:'Flank clockwise around the stock.',
+   notes:[{s:0,d:.22,p:[[0,3600],[.2,3680],[.6,3750],[1,3550]]},{s:.3,d:.36,p:[[0,1390],[.4,1415],[1,1060]]}]},
+  {id:'walkup', name:'Walk Up', says:'wheeu · wheeu', yt:20, meaning:'Walk straight in toward the stock.',
+   notes:[{s:0,d:.2,p:[[0,2500],[.45,3300],[1,1450]]},{s:.33,d:.24,p:[[0,2750],[.3,3540],[1,1200]]}]},
+  {id:'here', name:'Come Here', says:'oo-WHEEE-ooo-WIT!', yt:22, meaning:'Come straight back to me.',
+   notes:[{s:0,d:.82,p:[[0,1210],[.08,1220],[.17,2760],[.25,2750],[.7,1207],[.77,1260],[1,4150]]}]},
+  {id:'down', name:'Lie Down', says:'wheeeeeeeee (high, steady)', yt:26, meaning:'Stop and drop to the ground.',
+   notes:[{s:0,d:.8,p:[[0,2600],[.1,3950],[.3,4020],[.6,4100],[.9,4210],[1,4200]]}]},
+];
+const byId=Object.fromEntries(CMDS.map(c=>[c.id,c]));
+const dur=c=>Math.max(...c.notes.map(n=>n.s+n.d));
+function freqAt(p,u){
+  if(u<=p[0][0]) return p[0][1];
+  for(let i=0;i<p.length-1;i++){ const [u0,f0]=p[i],[u1,f1]=p[i+1];
+    if(u<=u1){ const t=(u-u0)/(u1-u0||1), w=(1-Math.cos(Math.PI*t))/2; return f0+(f1-f0)*w; } }
+  return p[p.length-1][1];
+}
+
+/* ---------- audio ---------- */
+let AC=null;
+function ac(){ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); return AC; }
+function noiseBuf(c){ if(c._nb) return c._nb; const b=c.createBuffer(1,c.sampleRate,c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return c._nb=b; }
+function schedule(c,cmd,t0,tempo){
+  for(const n of cmd.notes){
+    const start=t0+n.s*tempo, d=n.d*tempo, N=Math.max(24,Math.round(d*300)), curve=new Float32Array(N);
+    for(let i=0;i<N;i++){ const u=i/(N-1); curve[i]=freqAt(n.p,u)*(1+.004*Math.sin(2*Math.PI*6*u*d)); }
+    const osc=c.createOscillator(); osc.type='sine'; osc.frequency.setValueCurveAtTime(curve,start,d);
+    const g=c.createGain(), peak=.26, rel=Math.min(.03,d/3);
+    g.gain.setValueAtTime(0,start); g.gain.linearRampToValueAtTime(peak,start+.012); g.gain.setValueAtTime(peak,start+d-rel); g.gain.linearRampToValueAtTime(0,start+d);
+    osc.connect(g).connect(c.destination); osc.start(start); osc.stop(start+d+.02);
+    const src=c.createBufferSource(); src.buffer=noiseBuf(c); src.loop=true;
+    const bp=c.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=9; bp.frequency.setValueCurveAtTime(curve,start,d);
+    const ng=c.createGain(); ng.gain.setValueAtTime(0,start); ng.gain.linearRampToValueAtTime(.06,start+.012); ng.gain.setValueAtTime(.06,start+d-rel); ng.gain.linearRampToValueAtTime(0,start+d);
+    src.connect(bp).connect(ng).connect(c.destination); src.start(start); src.stop(start+d+.02);
+  }
+  return dur(cmd)*tempo;
+}
+
+/* ---------- graph: frequency (Hz) against time (s) ---------- */
+const G={W:640,H:300,L:62,R:16,T:14,B:40,tMax:1.0,fMin:1000,fMax:6000};
+const GX=t=>G.L+t/G.tMax*(G.W-G.L-G.R), GY=f=>G.T+(1-(f-G.fMin)/(G.fMax-G.fMin))*(G.H-G.T-G.B);
+function axes(tMax){
+  const X=t=>G.L+t/tMax*(G.W-G.L-G.R), step=tMax<=1?.1:.25; let s='';
+  for(let f=1000;f<=G.fMax;f+=500){
+    const major=f%1000===0;
+    s+=`<line x1="${G.L}" x2="${G.W-G.R}" y1="${GY(f)}" y2="${GY(f)}" stroke="var(--line)" ${major?'':'stroke-dasharray="2 4"'}/>`;
+    s+=`<text x="${G.L-8}" y="${GY(f)+4}" text-anchor="end" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">${(f/1000).toFixed(1)}</text>`;
+  }
+  for(let i=0;i<=Math.round(tMax/step);i++){ const t=i*step, major=Math.abs(t*2-Math.round(t*2))<1e-6;
+    s+=`<line x1="${X(t)}" x2="${X(t)}" y1="${G.T}" y2="${G.H-G.B}" stroke="var(--line)" ${major?'':'stroke-dasharray="2 4"'}/>`;
+    s+=`<text x="${X(t)}" y="${G.H-G.B+16}" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">${+t.toFixed(2)}</text>`;
+  }
+  s+=`<text x="14" y="${(G.T+G.H-G.B)/2}" transform="rotate(-90 14 ${(G.T+G.H-G.B)/2})" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">frequency (kHz)</text>`;
+  s+=`<text x="${(G.L+G.W-G.R)/2}" y="${G.H-6}" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">time (seconds)</text>`;
+  return {s,X};
+}
+const shape=(c,X,w,op)=>c.notes.map(n=>{ const pts=[]; for(let i=0;i<=60;i++){ const u=i/60; pts.push(X(n.s+n.d*u).toFixed(1)+','+GY(freqAt(n.p,u)).toFixed(1)); }
+  return `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--gorse)" stroke-width="${w}" stroke-opacity="${op}" stroke-linecap="round" stroke-linejoin="round"/>`; }).join('');
+function graphSVG(c){
+  let s=axes(G.tMax).s+shape(c,GX,4,1);
+  s+=`<line data-ph="${c.id}" x1="${G.L}" x2="${G.L}" y1="${G.T}" y2="${G.H-G.B}" stroke="var(--ink)" stroke-width="1.5" style="opacity:0"/>`;
+  return `<svg class="graph" viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="Frequency over time for ${c.name}">${s}</svg>`;
+}
+function stats(c){
+  let lo=1e9,hi=0; for(const n of c.notes) for(let i=0;i<=60;i++){ const f=freqAt(n.p,i/60); lo=Math.min(lo,f); hi=Math.max(hi,f); }
+  const fmt=f=>Math.round(f).toLocaleString('en-US')+' Hz';
+  return `<span class="stat">Length <b>${dur(c).toFixed(2)} s</b></span><span class="stat">Lowest <b>${fmt(lo)}</b></span><span class="stat">Highest <b>${fmt(hi)}</b></span><span class="stat">Parts <b>${c.notes.length}</b></span>`;
+}
+
+function play(cmd,tempo){
+  const c=ac(), t0=c.currentTime+.04, d=schedule(c,cmd,t0,tempo), ph=document.querySelector(`[data-ph="${cmd.id}"]`);
+  (function tick(){ const tt=(c.currentTime-t0)/tempo, x=GX(Math.max(0,Math.min(tt,G.tMax)));
+    ph.setAttribute('x1',x); ph.setAttribute('x2',x); ph.style.opacity=tt>=0&&tt<=dur(cmd)?1:0;
+    if(c.currentTime<t0+d+.05) requestAnimationFrame(tick); })();
+}
+
+const PLAY='<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0 L10 6 L0 12Z"/></svg>';
+$('#cmds').innerHTML=CMDS.map(c=>`
+  <article class="cmd" id="cmd-${c.id}">
+    <div class="cmd-head">
+      <div><h2>${c.name}</h2><div class="says">${c.says}</div><p class="meaning">${c.meaning}</p></div>
+      <div class="btns">
+        <button class="btn primary" type="button" data-play="${c.id}">${PLAY}Play</button>
+        <button class="btn" type="button" data-slow="${c.id}">Slow</button>
+        <a class="btn" href="${YT(c.yt)}" target="_blank" rel="noopener">Original ↗</a>
+      </div>
+    </div>
+    <div class="graph-wrap">${graphSVG(c)}</div>
+    <div class="stats">${stats(c)}</div>
+  </article>`).join('');
+document.querySelectorAll('[data-play]').forEach(b=>b.addEventListener('click',()=>play(byId[b.dataset.play],1)));
+document.querySelectorAll('[data-slow]').forEach(b=>b.addEventListener('click',()=>play(byId[b.dataset.slow],2.2)));
+
+/* ---------- live pitch tracker ---------- */
+const WIN=3, GAP=.35;                       // seconds shown live; silence that ends a whistle
+const joined=(a,b)=>b.t-a.t<.05 && Math.abs(Math.log2(b.f/a.f))<.3;   // same note: close in time and pitch
+const fmtHz=f=>Math.round(f).toLocaleString('en-US')+' Hz';
+let LW=G.W, K=1;                            // live canvas: logical width and scale (keeps text readable on phones)
+let mic=null, an=null, spec=null, hist=[], phrase=null, lastOn=0, last=null, raf=0;
+const cv=$('#live'), cx=cv.getContext('2d'), sel=$('#cmpSel');
+sel.innerHTML=CMDS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+
+function detect(){
+  an.getFloatFrequencyData(spec);
+  const bin=an.context.sampleRate/an.fftSize, k0=Math.ceil(800/bin), k1=Math.min(spec.length-2,Math.floor(8000/bin));
+  let k=k0, sum=0;
+  for(let i=k0;i<=k1;i++){ sum+=spec[i]; if(spec[i]>spec[k]) k=i; }
+  const mean=sum/(k1-k0+1);
+  if(spec[k]<-75 || spec[k]-mean<22) return null;         // too quiet or not tonal enough for a whistle
+  const a=spec[k-1], b=spec[k], c=spec[k+1], d=a-2*b+c;
+  return (k+(d?.5*(a-c)/d:0))*bin;
+}
+
+function sizeCanvas(){
+  const w=cv.clientWidth, r=devicePixelRatio||1;
+  K=Math.max(w/G.W,.8); LW=w/K; cv.style.height=G.H*K+'px';
+  cv.width=Math.round(w*r); cv.height=Math.round(G.H*K*r);
+}
+function drawLive(now,f){
+  const css=getComputedStyle(document.documentElement), v=n=>css.getPropertyValue(n).trim();
+  const X=t=>G.L+(1-(now-t)/WIN)*(LW-G.L-G.R);
+  const k=cv.width/LW; cx.setTransform(k,0,0,k,0,0);
+  cx.fillStyle=v('--surface-2'); cx.fillRect(0,0,LW,G.H);
+  cx.font='11px "JetBrains Mono", monospace'; cx.fillStyle=v('--muted'); cx.strokeStyle=v('--line'); cx.lineWidth=1;
+  for(let f=1000;f<=G.fMax;f+=500){ cx.setLineDash(f%1000?[2,4]:[]); cx.beginPath(); cx.moveTo(G.L,GY(f)); cx.lineTo(LW-G.R,GY(f)); cx.stroke();
+    cx.textAlign='right'; cx.fillText((f/1000).toFixed(1),G.L-8,GY(f)+4); }
+  for(let s=0;s<=WIN;s+=.5){ const x=G.L+(1-s/WIN)*(LW-G.L-G.R); cx.setLineDash(s%1?[2,4]:[]);
+    cx.beginPath(); cx.moveTo(x,G.T); cx.lineTo(x,G.H-G.B); cx.stroke(); cx.textAlign='center'; cx.fillText(s?'-'+s:'now',x,G.H-G.B+16); }
+  cx.setLineDash([]); cx.fillText('time (seconds)',(G.L+LW-G.R)/2,G.H-6);
+  cx.save(); cx.translate(14,(G.T+G.H-G.B)/2); cx.rotate(-Math.PI/2); cx.fillText('frequency (kHz)',0,0); cx.restore();
+  cx.save(); cx.beginPath(); cx.rect(G.L,G.T,LW-G.L-G.R,G.H-G.T-G.B); cx.clip();
+  cx.strokeStyle=v('--moss'); cx.lineWidth=3; cx.lineCap=cx.lineJoin='round'; cx.beginPath();
+  let prev=null;
+  for(const p of hist){ const x=X(p.t), y=GY(p.f);
+    if(prev && joined(prev,p)) cx.lineTo(x,y); else { cx.moveTo(x,y); cx.lineTo(x+.1,y); }
+    prev=p; }
+  cx.stroke(); cx.restore();
+  if(f){                                    // current position: guide line, arrow on the axis, dot at "now"
+    const y=GY(Math.max(G.fMin,Math.min(G.fMax,f))), x=LW-G.R;
+    cx.strokeStyle=v('--gorse'); cx.globalAlpha=.5; cx.lineWidth=1; cx.setLineDash([3,4]);
+    cx.beginPath(); cx.moveTo(G.L,y); cx.lineTo(x,y); cx.stroke(); cx.setLineDash([]); cx.globalAlpha=1;
+    cx.fillStyle=v('--gorse'); cx.beginPath(); cx.moveTo(G.L+1,y); cx.lineTo(G.L-9,y-6); cx.lineTo(G.L-9,y+6); cx.closePath(); cx.fill();
+    cx.beginPath(); cx.arc(x,y,6.5,0,2*Math.PI); cx.fill(); cx.lineWidth=2.5; cx.strokeStyle=v('--surface'); cx.stroke();
+  }
+}
+
+function compare(){
+  const c=byId[sel.value], you=last?last.pts:[], yd=you.length?you[you.length-1][0]:0;
+  const tMax=Math.max(1,Math.ceil(Math.max(dur(c),yd)*4)/4), {s,X}=axes(tMax);
+  let mine='';
+  if(you.length){ let seg=[], out=[];
+    you.forEach((p,i)=>{ if(i && !joined({t:you[i-1][0],f:you[i-1][1]},{t:p[0],f:p[1]})){ out.push(seg); seg=[]; } seg.push(X(p[0]).toFixed(1)+','+GY(Math.max(G.fMin,Math.min(G.fMax,p[1]))).toFixed(1)); });
+    out.push(seg);
+    mine=out.map(sg=>`<polyline points="${sg.join(' ')}" fill="none" stroke="var(--moss)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`).join(''); }
+  $('#cmpGraph').innerHTML=`<svg class="graph" viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="Your last whistle compared with ${c.name}">${s}${shape(c,X,8,.4)}${mine}</svg>`;
+  let lo=1e9,hi=0; for(const n of c.notes) for(let i=0;i<=60;i++){ const f=freqAt(n.p,i/60); lo=Math.min(lo,f); hi=Math.max(hi,f); }
+  const key=(col,t)=>`<span class="stat"><span class="key" style="background:var(${col})"></span>${t}</span>`;
+  $('#cmpStats').innerHTML=key('--gorse',c.name)+key('--moss',you.length?'You':'You (whistle to capture)')+(you.length?
+    `<span class="stat">Length <b>${yd.toFixed(2)} s</b> vs ${dur(c).toFixed(2)} s</span>`+
+    `<span class="stat">Lowest <b>${fmtHz(Math.min(...you.map(p=>p[1])))}</b> vs ${fmtHz(lo)}</span>`+
+    `<span class="stat">Highest <b>${fmtHz(Math.max(...you.map(p=>p[1])))}</b> vs ${fmtHz(hi)}</span>`:'');
+}
+
+function loop(){
+  const now=performance.now()/1000, f=detect();
+  if(f){ hist.push({t:now,f}); lastOn=now;
+    if(!phrase) phrase={t0:now,pts:[]};
+    phrase.pts.push([now-phrase.t0,f]); }
+  if(phrase && (now-lastOn>GAP || now-phrase.t0>3)){
+    const p=phrase.pts; if(p.length>4 && p[p.length-1][0]>.08){ last=phrase; compare(); }
+    phrase=null; }
+  while(hist.length && hist[0].t<now-WIN-.1) hist.shift();
+  const hz=$('#hz'); hz.textContent=f?fmtHz(f):'— Hz'; hz.classList.toggle('off',!f);
+  drawLive(now,f); raf=requestAnimationFrame(loop);
+}
+
+async function startMic(){
+  const btn=$('#micBtn'), msg=$('#micMsg');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    const c=ac(); an=c.createAnalyser(); an.fftSize=2048; an.smoothingTimeConstant=0; spec=new Float32Array(an.frequencyBinCount);
+    mic={stream,src:c.createMediaStreamSource(stream)}; mic.src.connect(an);
+    msg.hidden=true; btn.textContent='Stop listening'; btn.classList.remove('primary');
+    $('#hzNote').textContent='Listening. Pause briefly after each whistle to capture it below.';
+    raf=requestAnimationFrame(loop);
+  }catch(e){ msg.hidden=false; msg.textContent='Could not use the microphone: '+(e.message||e.name)+'. Allow microphone access for this page and try again.'; }
+}
+function stopMic(){
+  cancelAnimationFrame(raf); mic.src.disconnect(); mic.stream.getTracks().forEach(t=>t.stop()); mic=null; phrase=null;
+  const btn=$('#micBtn'); btn.textContent='Start listening'; btn.classList.add('primary');
+  $('#hz').textContent='— Hz'; $('#hz').classList.add('off'); $('#hzNote').textContent='Stopped.';
+}
+$('#micBtn').addEventListener('click',()=>mic?stopMic():startMic());
+sel.addEventListener('change',compare);
+const redraw=()=>{ sizeCanvas(); if(!mic) drawLive(performance.now()/1000); };
+addEventListener('resize',redraw);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
+redraw(); compare();
+
+})();
+</script>
